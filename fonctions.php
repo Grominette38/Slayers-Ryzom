@@ -3,7 +3,7 @@
 
 function listeRois()
 {
-	$fichierXML = 'roipop.xml';
+	$fichierXML = 'roipop-ori.xml';
 	$docXML = simplexml_load_file($fichierXML);
     foreach($docXML->roi as $roi){
      // echo 'roi : '.$roi->id.' | Nom : '.$roi->nom.'<br>';  
@@ -15,7 +15,7 @@ function listeRois()
 
 function listeSuffixes()
 {
-	$fichierXML = 'roipop.xml';
+	$fichierXML = 'roipop-ori.xml';
 	$docXML = simplexml_load_file($fichierXML);
     foreach($docXML->suffixe as $suffixe){ 
 		echo '<option value='.$suffixe["nom"].'>'.$suffixe["nom"].'</option>';
@@ -26,7 +26,7 @@ function listeSuffixes()
 function listeLieux()
 {
     //on boucle sur chaque continent puis à l'intérieur sur chaque lieu
-	$fichierXML = 'roipop.xml';
+	$fichierXML = 'roipop-ori.xml';
 	$docXML = simplexml_load_file($fichierXML);
 	//boucle continent
     foreach($docXML->continent as $continent){ 
@@ -44,7 +44,7 @@ function listeLieux()
 function affichageTable()
 {
     //on boucle sur chaque continent puis à l'intérieur sur chaque lieu, puis sur chaque roi
-	$fichierXML = 'roipop.xml';
+	$fichierXML = 'roipop-ori.xml';
 	$docXML = simplexml_load_file($fichierXML);
 	$ligne="";
 	$i=0;
