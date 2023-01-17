@@ -9,7 +9,7 @@ if(isset($_POST['Ajouter']))
 {
 	//echo 'paré pour l\'enregistrement !';
     
-	$xml = simplexml_load_file("roipop.xml") or die("Erreur de chargement de fichier.");
+	$xml = simplexml_load_file("roipop-ori.xml") or die("Erreur de chargement de fichier.");
 	$docXML = new SimpleXMLElement($xml->asXML());
 	
 	
