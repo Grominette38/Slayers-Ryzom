@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+   <style>
+      p { text-align: center;
+      background-color:  rgb(235, 95, 91);
+   image;}
+   .center {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 10%;
+}
+head,body{
+     background-color: rgba(39, 128, 245, 0.562);
+}
+   </style>
+<head>
+   <nav>
+      <ul>
+         <li id="#1"><a href="index.html">Page d'Acceuil</a></li>
+         <link rel="stylesheet" href="stylechangementsaison.css">
+  
+      </ul>
+     </nav>
+
+   <img src="media/guildicon.png.png"/>
+   <p>Bonjour Foreur du Clan Of Slayers</p>
+   <title>Foreur Clan Of Slayers</title>
+   <meta charset="utf-8">
+   <link rel="icon" href="">
+   <style>
+   #night{background: rgba(24, 9, 0, 0.603); color:rgb(22, 207, 15);}
+      
+      
+   </style>
+   
+</head>
+<body>
+
+   
+   
+<hr>
+
+<p>Selection région</p>
+<select id="region">
+  <option value="-1">Selection région</option>
+  <optgroup label="Excellents">
+  <option value="9">Vide</option>
+  <option value="10">Loria</option>
+  <option value="11">Bosquet de la Confusion</option>
+  <option value="12">Couloir Brulée</option>
+  </optgroup>
+  <optgroup label="Supremes">
+  <option value="0">Source Interdite</option>
+  <option value="1">Terre de la Continuité</option>
+  <option value="2">Cité Engloutie</option>
+  <option value="3">Profondeur Interdite</option>
+  <option value="4">Gouffre d'Ichor</option>
+  <option value="5">Porte des Vents</option>
+  <option value="6">Foret Insaisissable</option>
+  <option value="7">Porte de l'Obscurité</option>
+  <option value="8">La Fosse aux Epreuves</option>
+  </optgroup>
+  <optgroup label="Super Nodes">
+  <option value="13">Spot Magique</option>
+  </optgroup>
+</select>
+
+<p>Combien de cycle désirez-vous (0-40)</p>
+<input type="number" id="hours" min="0" max="40" value="10">
+<br><button onclick="get_weather()">Get weather</button>
+<br><pre id="paste_here"></pre>
+
+<script>
+
+function get_weather(){
+
+   // form the url
+   var land = document.getElementById("region").value;
+/*
+
+Everything always in frence... Let's quess them then
+https://github.com/nimetu/ryzom_weather/blob/master/example.php
+
+
+
+// display weather on continents
+$continents = array(
+    'tryker',		Lakes
+    'matis',		Forest
+    'fyros',		Desert
+    'zorai',		Jungle
+    'newbieland',
+    'nexus',		Nexus
+    'sources',		Under Spring
+    'bagne',		Abyss of ichor
+    'terre'		Forbidden Depths,Sunken City, Land of Continuity
+    'route_gouffre',	Trench of Trials,Gate of Obscurity,Elusive Forest,Windy Gate?
+    'matis_island',
+);
+
+
+
+
+*/
+   if( land == 0 )      { land = "sources"  ;}		// US
+   else if ( land == 1 ){ land = "terre"  ;} 		// LoC
+   else if ( land == 2 ){ land = "terre"  ;}		// SCi
+   else if ( land == 3 ){ land = "terre"  ;}		// FoD
+   else if ( land == 4 ){ land = "bagne"  ;}		// Ichor
+   else if ( land == 5 ){ land = "route_gouffre"  ;}	// Windy Gate
+   else if ( land == 6 ){ land = "route_gouffre"  ;}	// EF
+   else if ( land == 7 ){ land = "route_gouffre"  ;}	// GoO
+   else if ( land == 8 ){ land = "route_gouffre"  ;}	// ToT
+   else if ( land == 9) { land = "zorai"  ;}
+   else if ( land == 10){ land = "tryker" ;}
+   else if ( land == 11){ land = "matis"  ;}
+   else if ( land == 12){ land = "fyros"  ;}
+   else if ( land == 13){ land = "route_gouffre"  ;}
+
+   var hours = document.getElementById("hours").value;
+   if (hours > 40)
+       hours = 40;
+   var url = "https://api.bmsite.net/atys/weather?continent=" + land + "&cycles=" + hours + "&offset=0";
+
+   // Get the JSON from that url ( BM API )
+   xmlhttp=new XMLHttpRequest();
+   var json =0;
+   xmlhttp.onreadystatechange=function(){
+      if (xmlhttp.readyState==4 && xmlhttp.status==200){
+         json =  xmlhttp.responseText;
+      }
+   }
+   xmlhttp.open("GET", url, false);
+   xmlhttp.send();
+   json = JSON.parse(json);
+
+   // How many IRL minutes till next cycle? 3 hours for max cycle time and times 3 since hour is 3 mins
+   var syklia_jaljella = (3-(json.hour%3))*3;
+
+   // Also we need to know what hour is now, gladly time has started at 0h
+   var time = Math.floor(json.hour%24);
+   // let's check minutes too...
+   var ingame_minutes = (json.hour%24)-time;
+   ingame_minutes = Math.round(((ingame_minutes/100)*60)*100);
+
+   // Get what's IRL time from Browser
+   var currentdate = new Date();
+   var date_hour = currentdate.getHours();
+   var date_mins = currentdate.getMinutes();
+
+   var region = parseInt(document.getElementById("region").value);
+   var season = Math.floor((json.hour/2160 ) % 4);
+   var suplist = "";
+
+
+   // get from JSON what weather is now
+   var nyt = parseInt(json.cycle);
+
+   var valitulos = "<b>Ingame hour\tHumidity\tEstimated time\ttime to go (IRL)\t\tSups/Exce</b><hr>";
+   var syklilaskuri = 0;
+
+   for ( var i = nyt ; i< (nyt - -hours)  ; i++ ){
+        // check for night, below 3 h and after 22h.
+        var isnight  = 0;
+        if ( time < 3 || time >= 22 ){
+                isnight =1;
+        }
+
+      // Let's put minutes on the "time now" bar
+      if (i == nyt){
+         if (ingame_minutes > 9)
+            valitulos += time + ":" + ingame_minutes + "\t\t";
+         else
+            valitulos += time + ":0" + ingame_minutes + "\t\t";
+      }
+      else
+         valitulos += time + "h\t\t";
+
+      var tmp=parseFloat( (eval("json.continents." + land + "[i].value")*100 ).toFixed(1)) ;
+      valitulos += tmp + "%"
+      valitulos += "\t" + eval("json.continents." + land + "[i].condition");
+
+
+      if( eval("json.continents." + land + "[i].condition") == "worst" ){
+         if ( region > -1 && region < 9) suplist = "sup: " + sup_weather_list[region][season][3];
+         else if (region == 13) suplist = "SN: " + sn[season][3];
+         else{
+            if(isnight){  suplist = "<span id='night'>Exce night: " + exce_table[season][isnight][3] + "</span>";}
+            else{         suplist = "Exce day: " + exce_table[season][isnight][3];}
+         }
+      }
+      else if( eval("json.continents." + land + "[i].condition") == "bad" ){
+         if ( region > -1 && region < 9) suplist = "sup: " + sup_weather_list[region][season][2];
+         else if (region == 13) suplist = "SN: " + sn[season][2];
+         //else suplist = "Exce: " + exce_table[season][isnight][2];
+         else{
+            if(isnight){  suplist = "<span id='night'>Exce night: " + exce_table[season][isnight][2] + "</span>";}
+            else{         suplist = "Exce day: " + exce_table[season][isnight][2];}
+         }
+      }
+      else if( eval("json.continents." + land + "[i].condition") == "good" ){
+         if ( region > -1 && region < 9) suplist = "sup: " + sup_weather_list[region][season][1];
+		 else if (region == 13) suplist = "SN: " + sn[season][1];
+         else{
+            if(isnight){  suplist = "<span id='night'>Exce night: " + exce_table[season][isnight][1] + "</span>";}
+            else{         suplist = "Exce day: " + exce_table[season][isnight][1];}
+         }
+      }
+      else if( eval("json.continents." + land + "[i].condition") == "best" ){
+         if (  region > -1 && region < 9) suplist = "sup: " + sup_weather_list[region][season][0];
+		 else if (region == 13) suplist = "SN: " + sn[season][0];
+         else{
+            if(isnight){  suplist = "<span id='night'>Exce night: " + exce_table[season][isnight][0] + "</span>";}
+            else{         suplist = "Exce day: " + exce_table[season][isnight][0];}
+         }
+      }
+
+
+      //format the time as hh:mm
+      if (date_mins > 9)
+         valitulos += "\t"+ date_hour + ":" + date_mins;
+      else
+         valitulos += "\t" +date_hour + ":0" + date_mins;
+      tmp = parseInt(parseInt(syklia_jaljella)+parseInt(9*(syklilaskuri-1)));
+
+      // Nobody wants to know that now is 0 mins away from now, so after tmp is more than 0..
+      if (tmp > 0){
+        if( Math.floor(tmp/60) > 0){
+          valitulos += "\t\t" + parseInt(Math.floor(parseInt(tmp)/60)) + " hours and " + parseInt(parseInt(tmp)%60+1)  + " minutes";
+            if ( region > -1){ valitulos = valitulos + "\t\t" + suplist;}
+        }
+        else{
+          valitulos += "\t\t"  + parseInt(parseInt(tmp)%60+1)  + " minutes ";
+          if ( region > -1){ valitulos = valitulos + "\t\t\t" + suplist;}
+        }
+      }
+      // time to the start of next cycle (only 1st is different from 9 mins)
+      if (i == nyt)
+        date_mins += Math.floor(syklia_jaljella);
+      else
+        date_mins += 9;
+
+      // if mins and hours overflow overflow
+      if (date_mins >60) {
+        date_mins -= 60;
+        date_hour++;
+      }
+      if (date_hour >23)
+        date_hour -=23;
+
+      // time was ingame hours, so only hour overflow to be checked
+      time += 3- (Math.floor(time)%3);
+      if (time > 23)
+         time -=24;
+      syklilaskuri++;
+      if( syklilaskuri%4 == 0 )
+        valitulos += "\n\n";
+      else
+        valitulos += "\n";
+    }
+
+    // show results
+    document.getElementById("paste_here").innerHTML = valitulos;
+}
+
+var sup_weather_list = [[["big","splinter","saurona,soo","beckers,sha,glue,nita,scrath,pha,gulatch,yana,caprise,irin,patee,silverweed,beng,buo,silvio,moon,redhot,eyota,tama,dante,oath,dung,smart,kachine,anete,pilan,cuty"],["abhaya,shu","sarina,horny","hash,adriel","beckers,sha,glue,nita,scrath,pha,gulatch,yana,caprise,irin,patee,silverweed,beng,buo,silvio,moon,redhot,eyota,tama,dante,oath,dung,smart,kachine,anete,pilan,cuty"],["abhaya,mitexi,big","motega,fung,enola,tansy","tansy","beckers,sha,glue,nita,scrath,pha,gulatch,yana,caprise,irin,patee,silverweed,beng,buo,silvio,moon,redhot,eyota,tama,dante,oath,dung,smart,kachine,anete,pilan,cuty"],["mitexi,shu","dzao,visc","koorin","beckers,sha,glue,nita,scrath,pha,gulatch,yana,caprise,irin,patee,silverweed,beng,buo,silvio,moon,redhot,eyota,tama,dante,oath,dung,smart,kachine,anete,pilan,cuty"]],[["buo,oath,visc,anete","yana,tansy","perfling,tansy,yana","nita,big,caprise,smart,patee,hash,splinter,sha,glue,sarina,pha,moon,zun,silvio,pilan,beckers,enola,dante,koorin,horny,shu,adriel,motega,irin"],["saurona,kachine,oath,anete,scrath","gulatch,fung","mitexi,eyota","nita,big,caprise,smart,patee,hash,splinter,sha,glue,sarina,pha,moon,zun,silvio,pilan,beckers,enola,dante,koorin,horny,shu,adriel,motega,irin"],["saurona,dzao,beng","Abhaya,Silverweed,Redhot","(nothing)","nita,big,caprise,smart,patee,hash,splinter,sha,glue,sarina,pha,moon,zun,silvio,pilan,beckers,enola,dante,koorin,horny,shu,adriel,motega,irin"],["buo,kachine,visc,scrath,dzao,beng","soo,tama","dung,cuty","nita,big,caprise,smart,patee,hash,splinter,sha,glue,sarina,pha,moon,zun,silvio,pilan,beckers,enola,dante,koorin,horny,shu,adriel,motega,irin"]],[["oath,beckers,soo,redhot,adriel","yana,cuty","eyota,yana","patee,nita,scrath,tansy,anete,pha,gulatch,shu,dante,splinter,dzao,buo,moon,abhaya,mitexi,dung,caprice,glue,horny,silvio,saurona,smart,big,koorin,tama"],["oath,beckers,silverweed,soo,hash,zun,redhot,motega","fung,pilan,sarina","kachine","patee,nita,scrath,tansy,anete,pha,gulatch,shu,dante,splinter,dzao,buo,moon,abhaya,mitexi,dung,caprice,glue,horny,silvio,saurona,smart,big,koorin,tama"],["perfling,silverweed,sha,motega,adriel","enola","(nothing)","patee,nita,scrath,tansy,anete,pha,gulatch,shu,dante,splinter,dzao,buo,moon,abhaya,mitexi,dung,caprice,glue,horny,silvio,saurona,smart,big,koorin,tama"],["perfling,sha,hash,zun","visc,beng","irin","patee,nita,scrath,tansy,anete,pha,gulatch,shu,dante,splinter,dzao,buo,moon,abhaya,mitexi,dung,caprice,glue,horny,silvio,saurona,smart,big,koorin,tama"]],[["beckers,dzao,shu,sha","yana,splinter","yana,hash,enola","scrath,perfling,smart,dante,silverweed,pha,moon,irin,beng,sarina,cuty,koorin,tansy,patee,silvio,horny,anete,buo,mitexi,gulatch,nita,tama,adriel"],["shu,sha,eyota,saurona","fung,glue","kachine,oath","scrath,perfling,smart,dante,silverweed,pha,moon,irin,beng,sarina,cuty,koorin,tansy,patee,silvio,horny,anete,buo,mitexi,gulatch,nita,tama,adriel"],["zun,eyota,caprise","redhot,motega,visc","(nothing)","scrath,perfling,smart,dante,silverweed,pha,moon,irin,beng,sarina,cuty,koorin,tansy,patee,silvio,horny,anete,buo,mitexi,gulatch,nita,tama,adriel"],["dzao,saurona,caprise","abhaya,soo","big,pilan","scrath,perfling,smart,dante,silverweed,pha,moon,irin,beng,sarina,cuty,koorin,tansy,patee,silvio,horny,anete,buo,mitexi,gulatch,nita,tama,adriel"]],[["big,kachine,redhot,oath","tansy,patee,smart","sarina,tansy,patee","fung,tama,buo,beckers,caprice,silvio,irin,gulatch,eyota,dante,scrath,beng,enola,pha,soo,zun,sha,adriel,visc,koorin,anete,horny,yana"],["kachine,hash","pilan","abhaya","fung,tama,buo,beckers,caprice,silvio,irin,gulatch,eyota,dante,scrath,beng,enola,pha,soo,zun,sha,adriel,visc,koorin,anete,horny,yana"],["big,perfling,oath","nita,glue","nita","fung,tama,buo,beckers,caprice,silvio,irin,gulatch,eyota,dante,scrath,beng,enola,pha,soo,zun,sha,adriel,visc,koorin,anete,horny,yana"],["perfling,redhot,hash","motega,saurona,shu","cuty","fung,tama,buo,beckers,caprice,silvio,irin,gulatch,eyota,dante,scrath,beng,enola,pha,soo,zun,sha,adriel,visc,koorin,anete,horny,yana"]],[["sarina,buo","splinter","oath,zun","koorin,mitexi,pilan,gulatch,silverweed,beng,hash,horny,glue,smart,dante,visc,dung,sha,tama,tansy,patee,soo,saurona,yana,eyota,scrath,motega,nita,shu,silvio,moon,anete,"],["sarina,buo,dzao,pha,abhaya","irin,fung","adriel","koorin,mitexi,pilan,gulatch,silverweed,beng,hash,horny,glue,smart,dante,visc,dung,sha,tama,tansy,patee,soo,saurona,yana,eyota,scrath,motega,nita,shu,silvio,moon,anete,"],["big,pha","enola,kachine","(nothing)","koorin,mitexi,pilan,gulatch,silverweed,beng,hash,horny,glue,smart,dante,visc,dung,sha,tama,tansy,patee,soo,saurona,yana,eyota,scrath,motega,nita,shu,silvio,moon,anete,"],["big,dzao,abhaya","(nothing)","cuty","koorin,mitexi,pilan,gulatch,silverweed,beng,hash,horny,glue,smart,dante,visc,dung,sha,tama,tansy,patee,soo,saurona,yana,eyota,scrath,motega,nita,shu,silvio,moon,anete,"]],[["dante,anete,perfling,sha","patee,cuty","adriel,patee","tansy,kachine,eyota,sarina,horny,yana,visc,dung,silvio,splinter,silverweed,irin,big,shu,beng,dzao,caprice,pha,koorin,scatch,glue,mitexi,oath,nita,beckers,soo,moon"],["sha,perfling,buo","pilan,fung","abhaya","tansy,kachine,eyota,sarina,horny,yana,visc,dung,silvio,splinter,silverweed,irin,big,shu,beng,dzao,caprice,pha,koorin,scatch,glue,mitexi,oath,nita,beckers,soo,moon"],["dante,anete,zun","motega,tama,redhot","(nothing)","tansy,kachine,eyota,sarina,horny,yana,visc,dung,silvio,splinter,silverweed,irin,big,shu,beng,dzao,caprice,pha,koorin,scatch,glue,mitexi,oath,nita,beckers,soo,moon"],["buo,zun","enola","gulatch,smart","tansy,kachine,eyota,sarina,horny,yana,visc,dung,silvio,splinter,silverweed,irin,big,shu,beng,dzao,caprice,pha,koorin,scatch,glue,mitexi,oath,nita,beckers,soo,moon"]],[["buo,mitexi,yana,abhaya","cuty,tansy","tansy,oath,enola","big,silvio,splinter,koorin,sarina,irin,saurona,moon,caprice,patee,nita,beckers,fung,dzao,scrath,silverweed,pha,zun,horny,dung,beng,kachine,shu,tama"],["buo,mitexi,adriel,sha","glue,gulatch","(nothing)","big,silvio,splinter,koorin,sarina,irin,saurona,moon,caprice,patee,nita,beckers,fung,dzao,scrath,silverweed,pha,zun,horny,dung,beng,kachine,shu,tama"],["anete,redhot","dante,motega","(nothing)","big,silvio,splinter,koorin,sarina,irin,saurona,moon,caprice,patee,nita,beckers,fung,dzao,scrath,silverweed,pha,zun,horny,dung,beng,kachine,shu,tama"],["adriel,anete,yana,sha,redhot,abhaya","eyota","smart,pilan","big,silvio,splinter,koorin,sarina,irin,saurona,moon,caprice,patee,nita,beckers,fung,dzao,scrath,silverweed,pha,zun,horny,dung,beng,kachine,shu,tama"]],[["sha,adriel,glue,eyota,perfling","big,yana","yana,mitexi","irin,tama,oath,koorin,zun,motega,silvio,nita,saurona,pha,beckers,buo,splinter,beng,anete,hash,cuty,fung,kachine,silverweed,pilan,horny,patee,visc,dzao,tansy"],["sha,adriel,eyota,scrath,shu","moon,caprice,dung","abhaya","irin,tama,oath,koorin,zun,motega,silvio,nita,saurona,pha,beckers,buo,splinter,beng,anete,hash,cuty,fung,kachine,silverweed,pilan,horny,patee,visc,dzao,tansy"],["(nothing)","dante,redhot","(nothing)","irin,tama,oath,koorin,zun,motega,silvio,nita,saurona,pha,beckers,buo,splinter,beng,anete,hash,cuty,fung,kachine,silverweed,pilan,horny,patee,visc,dzao,tansy"],["glue,perfling,scrath,shu","enola","smart,gulatch","irin,tama,oath,koorin,zun,motega,silvio,nita,saurona,pha,beckers,buo,splinter,beng,anete,hash,cuty,fung,kachine,silverweed,pilan,horny,patee,visc,dzao,tansy"]]];
+var exce_table = [[["Silverweed,Enola,Adriel,Perfling,Big,Horny,Smart,Eyota,Kachine,Tama","Cuty,Enola,Adriel,Horny,Eyota,Beckers,Oath,Redhot,Visc,Splinter,Pha (Void) ","Tama,Smart,Silverweed,Beckers,Redhot,Cuty,Dante,Tansy,Mitexi","Visc,Splinter,Oath,Kachine,Dante,Tansy,Mitexi,Perfling,Big,Pha (void)"],["Anete,Dzao,Shu,Sha (Void)","Sha (Void),Glue,Moon,Shu","Fung,Anete,Glue","Dzao,Fung,Moon"]],[["Eyota,Kachine,Tama,Yana,Caprice,Sarina,Nita,Patee","Pha,Scrath,Saurona,Silvio,Redhot,Visc,Patee,Eyota","Buo,Redhot,Tama,Scrath,Yana,Dante,Caprice,Saurona,Zun (No Void)","Visc,Dante,Kachine,Zun (No Void),Pha,Nita,Sarina,Silvio,Buo"],["Anete,Dzao,Shu","Glue,Moon,Shu","Fung,Anete,Glue,Zun (Void)","Zun (Void),Dzao,Fung,Moon"]],[["Big,Horny,Smart,Nita,Patee,Yana,Hash,Sha (No Void),Soo,Abhaya","Cuty,Splinter,Scrath,Beng,Pha (No Void),Horny,Patee,Sha (No Void)","Tansy,Zun (No Void),Smart,Scrath,Yana,Beng,Motega,Cuty,Soo","Big,Splinter,Tansy,Nita,Hash,Zun (No Void),Pha (No Void),Abhaya,Motega"],["Gulatch,Dung","Irin,Koorin,Dung","Gulatch,pilan,Koorin,Zun (Void)","Zun (Void),pilan,Irin" ]],[["Hash,Sha(No Void),Soo,Caprice,Sarina,Adriel,Perfling,Oath,Silverweed,Enola","Abhaya,Saurona,Silvio,Beckers,Beng,Sha (No Void),Enola","Buo,Mitexi,Motega,Caprice,Saurona,Adriel,Silverweed,Beng,Beckers,Soo","Sarina,Silvio,Buo,Perfling,Mitexi,Oath,Abhaya,Motega,Hash"],["Dung,Gulatch,Sha (void)","Sha (void),Koorin,Dung","Pilan,Irin,Gulatch,Koorin","Pilan,Irin"]]];
+var sn = [["-","-","Sap, Node","Bark, Oil, Node"],["-","-","Amber, Resin, Sap","Amber, Bark"],["-","-","Seed, Shell","Fiber, Oil, Shell"],["-","-","Resin, Seed, Wood","Fiber, Wood"]];
+
+
+// list to convert weathers into indexnumbers
+function weathers_to_numbers(weather){
+   return ["best", "good", "bad","worst"].indexOf(weather);
+}
+
+
+</script>
+</body>
+</html>

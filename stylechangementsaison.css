@@ -1,0 +1,54 @@
+@import url(https://fonts.googleapis.com/css?family=Audiowide|Sofia|Trirong);
+
+body {
+font-family: "Audiowide", sans-serif;
+padding: 0;
+margin: 0;
+}
+ul {
+    margin: 0;
+    padding: 0;
+}
+li{
+    list-style: none;
+}
+
+h2{
+    text-transform: uppercase;
+    text-align: center;
+    padding-top: 30px;
+    font-size: 2em;
+}
+
+a {
+    text-decoration: none;
+    color: black;
+}
+/* *******************************NAVBAR***************************** */
+nav {
+overflow: hidden;
+background-color:rgb(255, 0, 0);
+border: solid 5px #000;
+position: fixed;
+width: 15%%;
+opacity: 0.8;
+}
+
+
+header li a {
+    text-decoration: none;
+    display: block;
+    text-align: center;
+    padding: 18px 16px;
+}
+
+
+
+
+
+
+
+
+
+
+
