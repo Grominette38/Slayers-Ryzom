@@ -55,7 +55,7 @@ header li a {
 /* *******************************IMAGE PRINCIPALE***************************** */
 #imagePrincipale{
     padding-top: 60px;
-    background: url(media/armors.jpg) no-repeat fixed 50% 50%;
+    background: url(photoguilde.jpg) no-repeat fixed 50% 50%;
     background-size: cover; 
     height: 800px;
 }
