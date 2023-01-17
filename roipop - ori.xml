@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<donnees>
+	 <!-- liste des rois -->
+	 <roi id="1" nom="Arana"/>
+	 <roi id="2" nom="Arm"/>
+	 <roi id="3" nom="Kipee"/>
+	 <roi id="4" nom="Ocy"/>
+	 <roi id="5" nom="Gin"/>
+	 <roi id="6" nom="Bol"/>
+	 <roi id="7" nom="Cratcha"/>
+	 <roi id="8" nom="Womba"/>
+	 <roi id="9" nom="Slave"/>
+	 <roi id="10" nom="Stin"/>
+	 <roi id="11" nom="Shala"/>
+	 <roi id="12" nom="Cray"/>
+	 <roi id="13" nom="Kika"/>
+	 <roi id="14" nom="Kizo"/>
+	 <roi id="15" nom="Tyra"/>
+	 <roi id="16" nom="Yel"/>
+	 <roi id="17" nom="Kincher"/>
+	 <roi id="18" nom="Mada"/>
+	 <roi id="19" nom="Ragu"/>
+	 
+	 
+	 <!-- liste des suffixe -->
+	 <suffixe id="1" nom="Kan"/>
+	 <suffixe id="2" nom="keth"/>
+	 <suffixe id="3" nom="Kin"/>
+	 <suffixe id="4" nom="kyo"/>
+	 <suffixe id="5" nom="kya"/>
+	 <suffixe id="6" nom="koo"/>
+	  
+	 <!-- liste des continents -->
+	 <continent id="1" nom="Désert Ardent" couleur="#FFCC80">		
+		<lieu id="1" nom="Couloir Brûlé">
+			<!-- roi ds ce lieu -->
+			<poproi id="1" nom="Aranaketh" date="09/01/2023" heure="12:30"/>
+		</lieu>
+		<lieu id="2" nom="Canyon Interdit">
+			<!-- roi ds ce lieu -->
+			<poproi id="2" nom="Kipeeketh" date="28/11/2021" heure="13:45"/>
+		</lieu>	
+		<lieu id="3" nom="Dunes Sauvages">			
+		</lieu>	
+		<lieu id="4" nom="Dunes de l'Exil">			
+		</lieu>	
+		<lieu id="5" nom="Couloir Brûlé 3">			
+		</lieu>	
+		<lieu id="6" nom="Canyons Interdit 2">			
+		</lieu>	
+		<lieu id="7" nom="Dunes sauvages 2">			
+		</lieu>	
+		<lieu id="8" nom="Dunes de l'exil 2">			
+		</lieu>
+	 </continent>
+	 <continent id="2" nom="Sommet Verdoyant" couleur="#BFFF80">		
+		<lieu id="9" nom="Bosquet de la Confusion">
+			<!-- roi ds ce lieu -->
+			<poproi id="3" nom="Ginkin" date="27/10/1969" heure="11:20"/>
+		</lieu>
+		<lieu id="10" nom="Marais Supérieur">
+			<!-- roi ds ce lieu -->
+			<poproi id="4" nom="Bolkin" date="16/10/1998" heure="18:30"/>
+		</lieu>	
+		<lieu id="11" nom="Masure de l'Hérétique">			
+		</lieu>
+		<lieu id="12" nom="Source Cachée">			
+		</lieu>
+		<lieu id="13" nom="Bosquet de la Confusion 3">			
+		</lieu>	
+		<lieu id="14" nom="Marais Supérieur 2">			
+		</lieu>	
+		<lieu id="15" nom="Masure de l'Hérétique 2">			
+		</lieu>	
+		<lieu id="16" nom="Source Cachée 2">			
+		</lieu>
+	 </continent>
+	 <continent id="3" nom="Pays Malade" couleur="#BF80FF">			
+		<lieu id="17" nom="Vide">
+			<!-- roi ds ce lieu -->
+			<poproi id="5" nom="Cratchakyo" date="09/01/2023" heure="12:30"/>
+		</lieu>
+		<lieu id="18" nom="Bosquet de l'Ombre">
+			<!-- roi ds ce lieu -->
+			
+		</lieu>	
+		<lieu id="19" nom="Noeud de la Démence">			
+		</lieu>
+		<lieu id="20" nom="Vide 4">			
+		</lieu>	
+		<lieu id="21" nom="Bosquet de l'Ombre 2">			
+		</lieu>	
+		<lieu id="22" nom="Noeud de la Démence 2">			
+		</lieu>	
+	 </continent>
+	 <continent id="4" nom="Aeden Aqueous" couleur="#80BFFF">	
+		<lieu id="23" nom="Lagons de Loria">			
+		<poproi id="6" nom="Ragukoo" date="15/01/2023" heure="14:42"/></lieu>
+		<lieu id="24" nom="Ile Enchantée">			
+		</lieu>
+		<lieu id="25" nom="Plages d'Abondance">			
+		</lieu>
+		<lieu id="26" nom="Lagons de Loria 3">			
+		</lieu>	
+		<lieu id="27" nom="Ile Enchantée 2">			
+		</lieu>	
+		<lieu id="28" nom="Plages d'Abondance 2">			
+		</lieu>	
+	 </continent>
+</donnees>
